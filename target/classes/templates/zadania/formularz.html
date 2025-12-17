@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nowe Zadanie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <h1>Dodaj nowe zadanie</h1>
+        <form th:action="@{/zadania}" th:object="${zadanie}" method="post">
+            <div class="mb-3">
+                <label for="typ" class="form-label">Typ:</label>
+                <input type="text" class="form-control" id="typ" th:field="*{typ}" required>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status:</label>
+                <select class="form-control" id="status" th:field="*{status}">
+                    <option value="ZAPLANOWANE">ZAPLANOWANE</option>
+                    <option value="W_TRAKCIE">W_TRAKCIE</option>
+                    <option value="ZAKONCZONE">ZAKONCZONE</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <a href="/zadania" class="btn btn-secondary">Anuluj</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

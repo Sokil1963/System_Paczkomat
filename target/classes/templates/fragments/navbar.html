@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">System Paczkomatów</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:classappend="${currentUri  == '/'} ? ' active' : ''"
+                       href="/">Strona główna</a>
+                </li>
+
+                <!-- Paczkomaty - dostęp: ADMIN, FIXER -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'FIXER')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/paczkomaty')} ? ' active' : ''"
+                       href="/paczkomaty">Paczkomaty</a>
+                </li>
+
+                <!-- Sortownie - dostęp: ADMIN -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/sortownie')} ? ' active' : ''"
+                       href="/sortownie">Sortownie</a>
+                </li>
+
+                <!-- Przesyłki - dostęp: ADMIN, KURIER -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/przesylki')} ? ' active' : ''"
+                       href="/przesylki">Przesyłki</a>
+                </li>
+
+                <!-- Zadania - dostęp: ADMIN, KURIER -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/zadania')} ? ' active' : ''"
+                       href="/zadania">Zadania</a>
+                </li>
+
+                <!-- Użytkownicy - dostęp: ADMIN -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/uzytkownicy')} ? ' active' : ''"
+                       href="/uzytkownicy">Użytkownicy</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <!-- Zalogowany użytkownik -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown"
+                       role="button" data-bs-toggle="dropdown">
+                        <span sec:authentication="name"></span>
+                        <span class="badge bg-light text-dark ms-2" th:text="${loggedUser?.rola}" sec:authentication="principal.authorities"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/logout">Wyloguj się</a></li>
+                    </ul>
+                </li>
+
+                <!-- Link logowania - widoczny, gdy nikt nie jest zalogowany -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link text-white" href="/login">Zaloguj się</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

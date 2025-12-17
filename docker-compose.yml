@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: paczkomaty-db
+    environment:
+      POSTGRES_PASSWORD: misha123
+      POSTGRES_DB: paczkomaty_db
+      PGDATA: /var/lib/postgresql/18/docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - paczkomaty-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: paczkomaty-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 283014@student.pwr.edu.pl
+      PGADMIN_DEFAULT_PASSWORD: misha123
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - paczkomaty-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  paczkomaty-network:
+    driver: bridge
+

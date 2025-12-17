@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szczegóły Paczkomatu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <a href="/paczkomaty" class="btn btn-secondary mb-3">← Powrót do listy</a>
+        
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Szczegóły Paczkomatu</h2>
+            </div>
+            <div class="card-body" th:if="${paczkomat}">
+                <dl class="row">
+                    <dt class="col-sm-3">ID:</dt>
+                    <dd class="col-sm-9" th:text="${paczkomat.id}"></dd>
+                    
+                    <dt class="col-sm-3">Kod:</dt>
+                    <dd class="col-sm-9" th:text="${paczkomat.kod}"></dd>
+                    
+                    <dt class="col-sm-3">Adres:</dt>
+                    <dd class="col-sm-9" th:text="${paczkomat.adres}"></dd>
+                    
+                    <dt class="col-sm-3">Status:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge" 
+                              th:classappend="${paczkomat.status == 'AKTYWNY'} ? 'bg-success' : 'bg-danger'"
+                              th:text="${paczkomat.status}"></span>
+                    </dd>
+                </dl>
+
+                <div class="mt-4">
+                    <h4>Akcje</h4>
+                    <form th:action="@{/paczkomaty/{id}/blokada(id=${paczkomat.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-warning">Zablokuj</button>
+                    </form>
+                    <form th:action="@{/paczkomaty/{id}/odblokuj(id=${paczkomat.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-success">Odblokuj</button>
+                    </form>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Zgłoś awarię</h4>
+                    <form th:action="@{/paczkomaty/{id}/awaria(id=${paczkomat.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="opis" class="form-label">Opis awarii:</label>
+                            <textarea class="form-control" id="opis" name="opis" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="wymagaBlokady" name="wymagaBlokady" value="true">
+                                <label class="form-check-label" for="wymagaBlokady">
+                                    Wymaga blokady
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Zgłoś awarię</button>
+                    </form>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Awarie</h4>
+                    <table class="table table-striped" th:if="${awarie != null and !awarie.isEmpty()}">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Opis</th>
+                                <th>Data zgłoszenia</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="awaria : ${awarie}">
+                                <td th:text="${awaria.id}"></td>
+                                <td th:text="${awaria.opis}"></td>
+                                <td th:text="${awaria.dataZgloszenia}"></td>
+                                <td th:text="${awaria.statusAwarii}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p th:if="${awarie == null or awarie.isEmpty()}">Brak awarii</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
