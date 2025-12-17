@@ -44,7 +44,7 @@ class PrzesylkaServiceTest {
     void setUp() {
         przesylka = new Przesylka();
         przesylka.setId(1);
-        przesylka.setNumer("PRZ001");
+        przesylka.setNumer(1001L);
         przesylka.setOpis("Testowa przesyłka");
 
         status = new StatusPrzesylki();
@@ -70,15 +70,15 @@ class PrzesylkaServiceTest {
     @Test
     void testZnajdzPrzesylkePoNumerze() {
         // Given
-        when(przesylkaRepository.findByNumer("PRZ001")).thenReturn(Optional.of(przesylka));
+        when(przesylkaRepository.findByNumer(1001L)).thenReturn(Optional.of(przesylka));
 
         // When
-        Optional<Przesylka> result = przesylkaService.znajdzPrzesylkePoNumerze("PRZ001");
+        Optional<Przesylka> result = przesylkaService.znajdzPrzesylkePoNumerze(1001L);
 
         // Then
         assertTrue(result.isPresent());
-        assertEquals("PRZ001", result.get().getNumer());
-        verify(przesylkaRepository, times(1)).findByNumer("PRZ001");
+        assertEquals(1001L, result.get().getNumer());
+        verify(przesylkaRepository, times(1)).findByNumer(1001L);
     }
 
     @Test

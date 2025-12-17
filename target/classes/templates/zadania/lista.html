@@ -35,7 +35,7 @@
                         <span class="badge bg-info" th:text="${zadanie.status}"></span>
                     </td>
                     <td>
-                        <span th:if="${zadanie.dataStartu != null}" th:text="${#dates.format(zadanie.dataStartu, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:if="${zadanie.dataStartu != null}" th:text="${#temporals.format(zadanie.dataStartu, 'yyyy-MM-dd HH:mm')}"></span>
                         <span th:unless="${zadanie.dataStartu != null}">—</span>
                     </td>
                     <td>

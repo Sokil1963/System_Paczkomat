@@ -11,24 +11,62 @@
 
     <div class="container mt-5">
         <h1>Dodaj nowego użytkownika</h1>
-        <form th:action="@{/uzytkownicy}" th:object="${uzytkownik}" method="post">
+
+        <form th:action="@{/uzytkownicy}" th:object="${uzytkownik}" method="post" novalidate>
+            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Błędy walidacji:</strong>
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <div class="mb-3">
                 <label for="login" class="form-label">Login:</label>
-                <input type="text" class="form-control" id="login" th:field="*{login}" required>
+                <input type="text"
+                       class="form-control"
+                       id="login"
+                       th:field="*{login}"
+                       th:classappend="${#fields.hasErrors('login')} ? 'is-invalid'"
+                       pattern="^[^-].*"
+                       onkeypress="return event.key !== '-'"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}">
+                    <span th:each="err : ${#fields.errors('login')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="hasloHash" class="form-label">Hasło:</label>
-                <input type="password" class="form-control" id="hasloHash" th:field="*{hasloHash}" required>
+                <input type="password"
+                       class="form-control"
+                       id="hasloHash"
+                       th:field="*{hasloHash}"
+                       th:classappend="${#fields.hasErrors('hasloHash')} ? 'is-invalid'"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('hasloHash')}">
+                    <span th:each="err : ${#fields.errors('hasloHash')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="rola" class="form-label">Rola:</label>
-                <select class="form-control" id="rola" th:field="*{rola}" required>
+                <select class="form-control"
+                        id="rola"
+                        th:field="*{rola}"
+                        th:classappend="${#fields.hasErrors('rola')} ? 'is-invalid'"
+                        required>
                     <option value="">Wybierz rolę</option>
                     <option value="ADMIN">ADMIN</option>
                     <option value="KURIER">KURIER</option>
                     <option value="FIXER">FIXER</option>
                 </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('rola')}">
+                    <span th:each="err : ${#fields.errors('rola')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary">Zapisz</button>
             <a href="/uzytkownicy" class="btn btn-secondary">Anuluj</a>
         </form>

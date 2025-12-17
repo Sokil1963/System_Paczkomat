@@ -1,6 +1,8 @@
 package pl.pwr.paczkomaty.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ public class ZadanieDystrybucyjne {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Typ zadania jest wymagany")
+    @Pattern(regexp = "^[^-].*", message = "Typ nie może zaczynać się od minusa")
     @Column(name = "typ", nullable = false, length = 20)
     private String typ;
 

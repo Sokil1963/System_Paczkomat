@@ -11,15 +11,44 @@
 
     <div class="container mt-5">
         <h1>Dodaj nową przesyłkę</h1>
-        <form th:action="@{/przesylki}" th:object="${przesylka}" method="post">
+
+        <form th:action="@{/przesylki}" th:object="${przesylka}" method="post" novalidate>
+            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Błędy walidacji:</strong>
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <div class="mb-3">
                 <label for="numer" class="form-label">Numer przesyłki:</label>
-                <input type="text" class="form-control" id="numer" th:field="*{numer}" required>
+                <input type="number"
+                       class="form-control"
+                       id="numer"
+                       th:field="*{numer}"
+                       th:classappend="${#fields.hasErrors('numer')} ? 'is-invalid'"
+                       min="1"
+                       oninput="this.value = this.value < 1 ? '' : this.value"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('numer')}">
+                    <span th:each="err : ${#fields.errors('numer')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="opis" class="form-label">Opis:</label>
-                <textarea class="form-control" id="opis" th:field="*{opis}" rows="3"></textarea>
+                <textarea class="form-control"
+                          id="opis"
+                          th:field="*{opis}"
+                          th:classappend="${#fields.hasErrors('opis')} ? 'is-invalid'"
+                          rows="3"></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('opis')}">
+                    <span th:each="err : ${#fields.errors('opis')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="gabaryt" class="form-label">Gabaryt:</label>
                 <select class="form-control" id="gabaryt" th:field="*{gabaryt}">
@@ -29,14 +58,35 @@
                     <option value="C">C - Duży</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label for="waga" class="form-label">Waga (kg):</label>
-                <input type="number" step="0.01" class="form-control" id="waga" th:field="*{waga}">
+                <input type="number"
+                       step="0.01"
+                       min="0"
+                       class="form-control"
+                       id="waga"
+                       th:field="*{waga}"
+                       th:classappend="${#fields.hasErrors('waga')} ? 'is-invalid'"
+                       oninput="this.value = this.value < 0 ? '' : this.value">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('waga')}">
+                    <span th:each="err : ${#fields.errors('waga')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="kodOdbioru" class="form-label">Kod odbioru:</label>
-                <input type="text" class="form-control" id="kodOdbioru" th:field="*{kodOdbioru}" required>
+                <input type="text"
+                       class="form-control"
+                       id="kodOdbioru"
+                       th:field="*{kodOdbioru}"
+                       th:classappend="${#fields.hasErrors('kodOdbioru')} ? 'is-invalid'"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('kodOdbioru')}">
+                    <span th:each="err : ${#fields.errors('kodOdbioru')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary">Zapisz</button>
             <a href="/przesylki" class="btn btn-secondary">Anuluj</a>
         </form>

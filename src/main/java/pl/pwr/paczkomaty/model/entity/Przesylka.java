@@ -1,6 +1,7 @@
 package pl.pwr.paczkomaty.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,19 @@ public class Przesylka {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "numer", nullable = false, unique = true, length = 40)
-    private String numer;
+    @Positive(message = "Numer przesyłki musi być liczbą dodatnią")
+    @Column(name = "numer", nullable = false, unique = true)
+    private Long numer;
 
+    @NotBlank(message = "Opis jest wymagany")
     @Column(name = "opis", columnDefinition = "TEXT")
     private String opis;
 
     @Column(name = "gabaryt", length = 10)
     private String gabaryt;
 
+    @Positive(message = "Waga musi być większa od zera")
+    @Digits(integer = 6, fraction = 2, message = "Waga musi mieć prawidłowy format")
     @Column(name = "waga", precision = 8, scale = 2)
     private BigDecimal waga;
 

@@ -1,9 +1,12 @@
 package pl.pwr.paczkomaty.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pwr.paczkomaty.model.entity.Paczkomat;
@@ -42,6 +45,7 @@ public class PaczkomatController extends BaseController {
         return "redirect:/paczkomaty";
     }
 
+    @Valid
     @GetMapping("/nowy")
     @PreAuthorize("hasAnyRole('ADMIN', 'FIXER')")
     public String formularzNowegoPaczkomatu(Model model) {
@@ -51,7 +55,11 @@ public class PaczkomatController extends BaseController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'FIXER')")
-    public String zapiszPaczkomat(@ModelAttribute Paczkomat paczkomat) {
+    public String zapiszPaczkomat(@Valid @ModelAttribute Paczkomat paczkomat, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("paczkomat", paczkomat);
+            return "paczkomaty/formularz";
+        }
         paczkomatService.zapiszPaczkomat(paczkomat);
         return "redirect:/paczkomaty";
     }

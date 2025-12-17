@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS public.przesylka
     id serial NOT NULL,
     gabaryt character varying(10) COLLATE pg_catalog."default",
     kod_odbioru character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    numer character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    numer bigint NOT NULL,
     opis text COLLATE pg_catalog."default",
     waga numeric(8, 2),
     aktualny_status_id integer,

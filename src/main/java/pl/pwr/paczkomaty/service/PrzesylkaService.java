@@ -73,7 +73,7 @@ public class PrzesylkaService {
         return przesylkaRepository.findById(id);
     }
 
-    public Optional<Przesylka> znajdzPrzesylkePoNumerze(String numer) {
+    public Optional<Przesylka> znajdzPrzesylkePoNumerze(Long numer) {
         return przesylkaRepository.findByNumer(numer);
     }
 

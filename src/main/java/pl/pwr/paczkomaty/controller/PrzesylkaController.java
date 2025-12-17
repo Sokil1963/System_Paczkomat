@@ -1,11 +1,12 @@
 package pl.pwr.paczkomaty.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pwr.paczkomaty.model.entity.Przesylka;
 import pl.pwr.paczkomaty.model.entity.Uzytkownik;
 import pl.pwr.paczkomaty.service.PrzesylkaService;
@@ -37,7 +38,11 @@ public class PrzesylkaController extends BaseController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
-    public String zapiszPrzesylke(@ModelAttribute Przesylka przesylka) {
+    public String zapiszPrzesylke(@Valid @ModelAttribute Przesylka przesylka, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("przesylka", przesylka);
+            return "przesylki/formularz";
+        }
         przesylkaService.zapiszPrzesylke(przesylka);
         return "redirect:/przesylki";
     }
@@ -55,8 +60,8 @@ public class PrzesylkaController extends BaseController {
 
     @GetMapping("/szukaj")
     @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
-    public String szukajPrzesylki(@RequestParam(required = false) String numer, Model model) {
-        if (numer != null && !numer.isEmpty()) {
+    public String szukajPrzesylki(@RequestParam(required = false) Long numer, Model model) {
+        if (numer != null && numer > 0) {
             Optional<Przesylka> przesylka = przesylkaService.znajdzPrzesylkePoNumerze(numer);
             if (przesylka.isPresent()) {
                 return "redirect:/przesylki/" + przesylka.get().getId();
@@ -72,7 +77,6 @@ public class PrzesylkaController extends BaseController {
     public String aktualizujStatus(@PathVariable Integer id,
                                    @RequestParam String kodStatusu,
                                    @RequestParam(required = false) String opis) {
-        // Użyj ID zalogowanego użytkownika
         Integer loggedUserId = null;
         Optional<Uzytkownik> userOpt = getCurrentUser();
         if (userOpt.isPresent()) {

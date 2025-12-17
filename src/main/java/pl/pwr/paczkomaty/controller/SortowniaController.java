@@ -1,9 +1,11 @@
 package pl.pwr.paczkomaty.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pwr.paczkomaty.model.entity.Sortownia;
@@ -39,6 +41,7 @@ public class SortowniaController extends BaseController {
         return "redirect:/sortownie";
     }
 
+    @Valid
     @GetMapping("/nowa")
     @PreAuthorize("hasRole('ADMIN')")
     public String formularzNowejSortowni(Model model) {
@@ -48,7 +51,11 @@ public class SortowniaController extends BaseController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String zapiszSortownie(@ModelAttribute Sortownia sortownia) {
+    public String zapiszSortownie(@Valid @ModelAttribute Sortownia sortownia, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("sortownia", sortownia);
+            return "sortownie/formularz";
+        }
         sortowniaService.zapiszSortownie(sortownia);
         return "redirect:/sortownie";
     }

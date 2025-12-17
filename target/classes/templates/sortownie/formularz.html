@@ -11,15 +11,45 @@
 
     <div class="container mt-5">
         <h1>Dodaj nową sortownię</h1>
-        <form th:action="@{/sortownie}" th:object="${sortownia}" method="post">
+
+        <form th:action="@{/sortownie}" th:object="${sortownia}" method="post" novalidate>
+            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Błędy walidacji:</strong>
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <div class="mb-3">
                 <label for="nazwa" class="form-label">Nazwa:</label>
-                <input type="text" class="form-control" id="nazwa" th:field="*{nazwa}" required>
+                <input type="text"
+                       class="form-control"
+                       id="nazwa"
+                       th:field="*{nazwa}"
+                       th:classappend="${#fields.hasErrors('nazwa')} ? 'is-invalid'"
+                       pattern="^[^-].*"
+                       onkeypress="return event.key !== '-'"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('nazwa')}">
+                    <span th:each="err : ${#fields.errors('nazwa')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="adres" class="form-label">Adres:</label>
-                <textarea class="form-control" id="adres" th:field="*{adres}" rows="3" required></textarea>
+                <textarea class="form-control"
+                          id="adres"
+                          th:field="*{adres}"
+                          th:classappend="${#fields.hasErrors('adres')} ? 'is-invalid'"
+                          rows="3"
+                          required></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('adres')}">
+                    <span th:each="err : ${#fields.errors('adres')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary">Zapisz</button>
             <a href="/sortownie" class="btn btn-secondary">Anuluj</a>
         </form>

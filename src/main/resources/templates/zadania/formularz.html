@@ -11,11 +11,32 @@
 
     <div class="container mt-5">
         <h1>Dodaj nowe zadanie</h1>
-        <form th:action="@{/zadania}" th:object="${zadanie}" method="post">
+
+        <form th:action="@{/zadania}" th:object="${zadanie}" method="post" novalidate>
+            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Błędy walidacji:</strong>
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <div class="mb-3">
                 <label for="typ" class="form-label">Typ:</label>
-                <input type="text" class="form-control" id="typ" th:field="*{typ}" required>
+                <input type="text"
+                       class="form-control"
+                       id="typ"
+                       th:field="*{typ}"
+                       th:classappend="${#fields.hasErrors('typ')} ? 'is-invalid'"
+                       pattern="^[^-].*"
+                       onkeypress="return event.key !== '-'"
+                       required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('typ')}">
+                    <span th:each="err : ${#fields.errors('typ')}" th:text="${err}"></span>
+                </div>
             </div>
+
             <div class="mb-3">
                 <label for="status" class="form-label">Status:</label>
                 <select class="form-control" id="status" th:field="*{status}">
@@ -24,6 +45,7 @@
                     <option value="ZAKONCZONE">ZAKONCZONE</option>
                 </select>
             </div>
+
             <button type="submit" class="btn btn-primary">Zapisz</button>
             <a href="/zadania" class="btn btn-secondary">Anuluj</a>
         </form>
