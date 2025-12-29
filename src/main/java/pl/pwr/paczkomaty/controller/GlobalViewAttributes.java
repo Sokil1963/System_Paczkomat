@@ -27,7 +27,6 @@ public class GlobalViewAttributes {
 
     @ModelAttribute("loggedUser")
     public Uzytkownik loggedUser() {
-        // Pobierz zalogowanego użytkownika z Spring Security
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {

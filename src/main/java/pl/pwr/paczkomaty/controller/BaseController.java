@@ -32,24 +32,7 @@ public abstract class BaseController {
         return uzytkownikRepository.findByLogin(username);
     }
 
-    /**
-     * Sprawdza czy użytkownik jest zalogowany
-     */
-    protected boolean isLoggedIn() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication.isAuthenticated();
-    }
 
-    /**
-     * Sprawdza czy użytkownik ma dostęp i dodaje informacje o błędzie do modelu
-     */
-    protected boolean checkAccess(Model model, boolean hasAccess, String errorMessage) {
-        if (!hasAccess) {
-            model.addAttribute("error", errorMessage);
-            return false;
-        }
-        return true;
-    }
 
 }
 

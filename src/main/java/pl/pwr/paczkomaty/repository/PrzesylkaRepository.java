@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface PrzesylkaRepository extends JpaRepository<Przesylka, Integer> {
-    Optional<Przesylka> findByNumer(Long numer);
+    Optional<Przesylka> findById(Integer id);
 
 }
 

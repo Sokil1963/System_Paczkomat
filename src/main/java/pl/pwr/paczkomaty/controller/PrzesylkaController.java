@@ -60,29 +60,25 @@ public class PrzesylkaController extends BaseController {
 
     @GetMapping("/szukaj")
     @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
-    public String szukajPrzesylki(@RequestParam(required = false) Long numer, Model model) {
-        if (numer != null && numer > 0) {
-            Optional<Przesylka> przesylka = przesylkaService.znajdzPrzesylkePoNumerze(numer);
+    public String szukajPrzesylki(@RequestParam(required = false) Integer id, Model model) {
+        if (id != null && id > 0) {
+            Optional<Przesylka> przesylka = przesylkaService.znajdzPrzesylkePoNumerze(id);
             if (przesylka.isPresent()) {
                 return "redirect:/przesylki/" + przesylka.get().getId();
             } else {
-                model.addAttribute("error", "Nie znaleziono przesyłki o numerze: " + numer);
+                model.addAttribute("error", "Nie znaleziono przesyłki o numerze: " + id);
             }
         }
         return "przesylki/szukaj";
     }
 
-    @PostMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
-    public String aktualizujStatus(@PathVariable Integer id,
-                                   @RequestParam String kodStatusu,
-                                   @RequestParam(required = false) String opis) {
-        Integer loggedUserId = null;
-        Optional<Uzytkownik> userOpt = getCurrentUser();
-        if (userOpt.isPresent()) {
-            loggedUserId = userOpt.get().getId();
-        }
-        przesylkaService.aktualizujStatusPrzesylki(id, kodStatusu, opis, loggedUserId);
+    @PostMapping("/{id}/kod_odbioru") // To musi pasować do th:action w HTML
+     @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
+    public String aktualizujKodOdbioru(@PathVariable Integer id,
+                                       @RequestParam("kod_odbioru") Integer kodOdbioru) {
+
+        przesylkaService.aktualizujKodOdbioru(id, kodOdbioru);
+
         return "redirect:/przesylki/" + id;
     }
 }

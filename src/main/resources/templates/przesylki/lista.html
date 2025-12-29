@@ -24,26 +24,30 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Numer</th>
                     <th>Opis</th>
                     <th>Status</th>
                     <th>Akcje</th>
+                    <th> Kod odbioru</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="przesylka : ${przesylki}">
-                    <td th:text="${przesylka.id}"></td>
-                    <td th:text="${przesylka.numer}"></td>
-                    <td th:text="${przesylka.opis}"></td>
-                    <td>
-                        <span class="badge bg-info" th:if="${przesylka.aktualnyStatus}" 
-                              th:text="${przesylka.aktualnyStatus.kod}"></span>
-                        <span class="text-muted" th:unless="${przesylka.aktualnyStatus}">Brak statusu</span>
-                    </td>
-                    <td>
-                        <a th:href="@{/przesylki/{id}(id=${przesylka.id})}" class="btn btn-sm btn-info">Szczegóły</a>
-                    </td>
-                </tr>
+            <tr th:each="przesylka : ${przesylki}">
+                <td th:text="${przesylka.id}"></td>
+
+                <td th:text="${przesylka.opis}"></td>
+
+                <td>
+            <span class="badge bg-info" th:if="${przesylka.aktualnyStatus}"
+                  th:text="${przesylka.aktualnyStatus.kod}"></span>
+                    <span class="text-muted" th:unless="${przesylka.aktualnyStatus}">Brak statusu</span>
+                </td>
+
+                <td>
+                    <a th:href="@{/przesylki/{id}(id=${przesylka.id})}" class="btn btn-sm btn-info">Szczegóły</a>
+                </td>
+
+                <td th:text="${przesylka.kodOdbioru}"></td>
+            </tr>
             </tbody>
         </table>
     </div>

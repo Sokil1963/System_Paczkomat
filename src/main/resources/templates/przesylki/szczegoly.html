@@ -22,9 +22,7 @@
                 <dl class="row">
                     <dt class="col-sm-3">ID:</dt>
                     <dd class="col-sm-9" th:text="${przesylka.id}"></dd>
-                    
-                    <dt class="col-sm-3">Numer:</dt>
-                    <dd class="col-sm-9" th:text="${przesylka.numer}"></dd>
+
                     
                     <dt class="col-sm-3">Opis:</dt>
                     <dd class="col-sm-9" th:text="${przesylka.opis}"></dd>
@@ -38,17 +36,13 @@
                 </dl>
 
                 <div class="mt-4">
-                    <h4>Aktualizuj status</h4>
-                    <form th:action="@{/przesylki/{id}/status(id=${przesylka.id})}" method="post">
+                    <h4>Aktualizuj kod odbioru</h4>
+                    <form th:action="@{/przesylki/{id}/kod_odbioru(id=${przesylka.id})}" method="post">
                         <div class="mb-3">
-                            <label for="kodStatusu" class="form-label">Kod statusu:</label>
-                            <input type="text" class="form-control" id="kodStatusu" name="kodStatusu" required>
+                            <label for="kod_odbioru" class="form-label">Nowy kod odbioru:</label>
+                            <input type="text" class="form-control" id="kod_odbioru" name="kod_odbioru" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="opis" class="form-label">Opis:</label>
-                            <textarea class="form-control" id="opis" name="opis" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Aktualizuj</button>
+                        <button type="submit" class="btn btn-warning">Zmień kod</button>
                     </form>
                 </div>
             </div>

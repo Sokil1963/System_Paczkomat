@@ -23,21 +23,6 @@
             </div>
 
             <div class="mb-3">
-                <label for="numer" class="form-label">Numer przesyłki:</label>
-                <input type="number"
-                       class="form-control"
-                       id="numer"
-                       th:field="*{numer}"
-                       th:classappend="${#fields.hasErrors('numer')} ? 'is-invalid'"
-                       min="1"
-                       oninput="this.value = this.value < 1 ? '' : this.value"
-                       required>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('numer')}">
-                    <span th:each="err : ${#fields.errors('numer')}" th:text="${err}"></span>
-                </div>
-            </div>
-
-            <div class="mb-3">
                 <label for="opis" class="form-label">Opis:</label>
                 <textarea class="form-control"
                           id="opis"

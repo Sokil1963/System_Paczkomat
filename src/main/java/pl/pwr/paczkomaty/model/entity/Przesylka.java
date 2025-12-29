@@ -19,11 +19,7 @@ import java.util.List;
 public class Przesylka {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Positive(message = "Numer przesyłki musi być liczbą dodatnią")
-    @Column(name = "numer", nullable = false, unique = true)
-    private Long numer;
+    private Long id;
 
     @NotBlank(message = "Opis jest wymagany")
     @Column(name = "opis", columnDefinition = "TEXT")
@@ -46,7 +42,7 @@ public class Przesylka {
     private Paczkomat paczkomatDocelowy;
 
     @Column(name = "kod_odbioru", nullable = false, length = 20)
-    private String kodOdbioru;
+    private Integer kodOdbioru;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aktualny_status_id")

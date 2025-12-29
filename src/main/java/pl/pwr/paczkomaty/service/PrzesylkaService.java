@@ -1,5 +1,6 @@
 package pl.pwr.paczkomaty.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,37 +31,20 @@ public class PrzesylkaService {
     private UzytkownikRepository uzytkownikRepository;
 
     public List<Przesylka> znajdzPrzesylkiDoWydania(Integer kurierId, Integer sortowniaId) {
-        // Implementacja logiki znajdowania przesyłek do wydania
         return przesylkaRepository.findAll();
     }
 
 
 
-    public void aktualizujStatusPrzesylki(Integer idPrzesylki, String kodStatusu, String opis, Integer uzytkownikId) {
-        Optional<Przesylka> przesylkaOpt = przesylkaRepository.findById(idPrzesylki);
-        Optional<StatusPrzesylki> statusOpt = statusPrzesylkiRepository.findByKod(kodStatusu);
-        
-        if (przesylkaOpt.isPresent() && statusOpt.isPresent()) {
-            Przesylka przesylka = przesylkaOpt.get();
-            StatusPrzesylki nowyStatus = statusOpt.get();
-            
-            // Zapisz historię
-            HistoriaStatusu historia = new HistoriaStatusu();
-            historia.setPrzesylka(przesylka);
-            historia.setStatus(nowyStatus);
-            historia.setCzasZmiany(LocalDateTime.now());
-            historia.setKomentarz(opis);
-            
-            if (uzytkownikId != null) {
-                uzytkownikRepository.findById(uzytkownikId).ifPresent(historia::setUzytkownik);
-            }
-            
-            historiaStatusuRepository.save(historia);
-            
-            // Aktualizuj status
-            przesylka.setAktualnyStatus(nowyStatus);
-            przesylkaRepository.save(przesylka);
-        }
+    @Transactional
+    public void aktualizujKodOdbioru(Integer id, Integer nowyKod) {
+        Przesylka przesylka = przesylkaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono przesyłki o ID: " + id));
+
+        przesylka.setKodOdbioru(nowyKod);
+
+         przesylkaRepository.save(przesylka);
+
     }
 
 
@@ -69,8 +53,8 @@ public class PrzesylkaService {
         return przesylkaRepository.findById(id);
     }
 
-    public Optional<Przesylka> znajdzPrzesylkePoNumerze(Long numer) {
-        return przesylkaRepository.findByNumer(numer);
+    public Optional<Przesylka> znajdzPrzesylkePoNumerze(Integer id) {
+        return przesylkaRepository.findById(id);
     }
 
     public Przesylka zapiszPrzesylke(Przesylka przesylka) {
