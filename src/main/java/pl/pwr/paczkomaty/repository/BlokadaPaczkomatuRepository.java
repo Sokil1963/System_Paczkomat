@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface BlokadaPaczkomatuRepository extends JpaRepository<BlokadaPaczkomatu, Integer> {
-    List<BlokadaPaczkomatu> findByPaczkomatId(Integer paczkomatId);
     List<BlokadaPaczkomatu> findByPaczkomatIdAndDataOdblokowaniaIsNull(Integer paczkomatId);
 }
 

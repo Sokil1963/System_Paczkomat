@@ -13,7 +13,5 @@ import java.util.Optional;
 public interface PrzesylkaRepository extends JpaRepository<Przesylka, Integer> {
     Optional<Przesylka> findByNumer(Long numer);
 
-    @Query("SELECT p FROM Przesylka p WHERE p.paczkomatDocelowy.id = :paczkomatId")
-    List<Przesylka> findByPaczkomatDocelowy(@Param("paczkomatId") Integer paczkomatId);
 }
 

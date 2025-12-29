@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface AwariaPaczkomatuRepository extends JpaRepository<AwariaPaczkomatu, Integer> {
     List<AwariaPaczkomatu> findByPaczkomatId(Integer paczkomatId);
-    List<AwariaPaczkomatu> findByStatusAwarii(String statusAwarii);
 }
 

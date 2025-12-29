@@ -35,12 +35,8 @@ public class UzytkownikService {
         return uzytkownikRepository.findById(id);
     }
 
-    public Optional<Uzytkownik> znajdzUzytkownikaPoLoginie(String login) {
-        return uzytkownikRepository.findByLogin(login);
-    }
 
     public Uzytkownik zapiszUzytkownika(Uzytkownik uzytkownik) {
-        // Hash hasła jeśli jest nowe (BCrypt hashe zaczynają się od $2a$ lub $2b$)
         if (uzytkownik.getHasloHash() != null &&
             !uzytkownik.getHasloHash().startsWith("$2a$") &&
             !uzytkownik.getHasloHash().startsWith("$2b$")) {
@@ -53,24 +49,8 @@ public class UzytkownikService {
         uzytkownikRepository.deleteById(id);
     }
 
-    /**
-     * Sprawdza czy podane hasło zgadza się z zahashowanym hasłem
-     */
-    public boolean sprawdzHaslo(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
 
-    /**
-     * Zmienia hasło użytkownika
-     */
-    public void zmienHaslo(Integer userId, String noweHaslo) {
-        Optional<Uzytkownik> uzytkownikOpt = uzytkownikRepository.findById(userId);
-        if (uzytkownikOpt.isPresent()) {
-            Uzytkownik uzytkownik = uzytkownikOpt.get();
-            uzytkownik.setHasloHash(passwordEncoder.encode(noweHaslo));
-            uzytkownikRepository.save(uzytkownik);
-        }
-    }
+
 
     /**
      * @deprecated Używaj passwordEncoder.encode() zamiast tego

@@ -34,9 +34,7 @@ public class PrzesylkaService {
         return przesylkaRepository.findAll();
     }
 
-    public List<Przesylka> znajdzPrzesylkiDoOdbioruZPaczkomatu(Integer kurierId, Integer paczkomatId) {
-        return przesylkaRepository.findByPaczkomatDocelowy(paczkomatId);
-    }
+
 
     public void aktualizujStatusPrzesylki(Integer idPrzesylki, String kodStatusu, String opis, Integer uzytkownikId) {
         Optional<Przesylka> przesylkaOpt = przesylkaRepository.findById(idPrzesylki);
@@ -65,9 +63,7 @@ public class PrzesylkaService {
         }
     }
 
-    public void zarejestrujNieprawidlowaPrzesylke(Integer idPrzesylki, String typBledu, Integer idPaczkomatu, Integer idKurier) {
-        // Implementacja
-    }
+
 
     public Optional<Przesylka> znajdzPrzesylke(Integer id) {
         return przesylkaRepository.findById(id);
@@ -78,7 +74,6 @@ public class PrzesylkaService {
     }
 
     public Przesylka zapiszPrzesylke(Przesylka przesylka) {
-        // Jeśli brak aktualnego statusu, spróbuj ustawić domyślny (pierwszy dostępny)
         if (przesylka.getAktualnyStatus() == null) {
             List<StatusPrzesylki> all = statusPrzesylkiRepository.findAll();
             if (!all.isEmpty()) {

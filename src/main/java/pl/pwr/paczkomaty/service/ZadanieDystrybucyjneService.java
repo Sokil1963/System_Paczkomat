@@ -19,30 +19,18 @@ public class ZadanieDystrybucyjneService {
     @Autowired
     private ZadanieDystrybucyjneRepository zadanieRepository;
     
-    @Autowired
-    private SortowniaRepository sortowniaRepository;
-    
-    @Autowired
-    private UzytkownikRepository uzytkownikRepository;
+
 
     public List<ZadanieDystrybucyjne> pobierzWszystkieZadania() {
         return zadanieRepository.findAll();
     }
 
-    public List<ZadanieDystrybucyjne> pobierzZadaniaKuriera(Integer kurierId) {
-        return zadanieRepository.findByKurierId(kurierId);
-    }
 
-    public List<ZadanieDystrybucyjne> pobierzZadaniaPoStatusie(String status) {
-        return zadanieRepository.findByStatus(status);
-    }
 
     public ZadanieDystrybucyjne utworzZadanie(ZadanieDystrybucyjne zadanie) {
-        // ustaw domyślny статус jeśli null
         if (zadanie.getStatus() == null) {
             zadanie.setStatus("ZAPLANOWANE");
         }
-        // Если пользователь хочет видеть время сразу при создании, установить dataStartu при создании, если пустая
         if (zadanie.getDataStartu() == null) {
             zadanie.setDataStartu(LocalDateTime.now());
         }
@@ -58,14 +46,11 @@ public class ZadanieDystrybucyjneService {
         if (zadanieOpt.isPresent()) {
             ZadanieDystrybucyjne zadanie = zadanieOpt.get();
 
-            // если перевод в W_TRAKCIE и дата старта пустая - установить
             if ("W_TRAKCIE".equals(status) && zadanie.getDataStartu() == null) {
                 zadanie.setDataStartu(LocalDateTime.now());
             }
 
-            // если перевод в ZAKONCZONE - установить дату конца, если пустая
             if ("ZAKONCZONE".equals(status) && zadanie.getDataKonca() == null) {
-                // если дата старта не установлена - установить её тоже (на случай пропуска)
                 if (zadanie.getDataStartu() == null) {
                     zadanie.setDataStartu(LocalDateTime.now());
                 }

@@ -7,14 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pl.pwr.paczkomaty.config.RoleBasedAccessControl;
 import pl.pwr.paczkomaty.model.entity.ZadanieDystrybucyjne;
-import pl.pwr.paczkomaty.model.entity.Uzytkownik;
 import pl.pwr.paczkomaty.service.ZadanieDystrybucyjneService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/zadania")
