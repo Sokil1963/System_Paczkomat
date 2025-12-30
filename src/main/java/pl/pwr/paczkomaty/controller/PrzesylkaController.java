@@ -53,6 +53,7 @@ public class PrzesylkaController extends BaseController {
         Optional<Przesylka> przesylka = przesylkaService.znajdzPrzesylke(id);
         if (przesylka.isPresent()) {
             model.addAttribute("przesylka", przesylka.get());
+            model.addAttribute("wszystkieStatusy", przesylkaService.pobierzWszystkieStatusy());
             return "przesylki/szczegoly";
         }
         return "redirect:/przesylki";
@@ -75,10 +76,19 @@ public class PrzesylkaController extends BaseController {
     @PostMapping("/{id}/kod_odbioru") // To musi pasować do th:action w HTML
      @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
     public String aktualizujKodOdbioru(@PathVariable Integer id,
-                                       @RequestParam("kod_odbioru") Integer kodOdbioru) {
+                                       @RequestParam("kod_odbioru") Integer kodOdbioru, @RequestParam String opis, @RequestParam Integer status) {
 
-        przesylkaService.aktualizujKodOdbioru(id, kodOdbioru);
+        przesylkaService.aktualizujPrzesylke(id, kodOdbioru, opis, status);
 
+        return "redirect:/przesylki/" + id;
+    }
+    @PostMapping("/{id}/edytuj")
+    @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
+    public String edytujPrzesylke(@PathVariable Integer id,
+                                  @RequestParam(required = false) Integer kodOdbioru,
+                                  @RequestParam(required = false) String opis,
+                                  @RequestParam(required = false) Integer statusId) {
+        przesylkaService.aktualizujPrzesylke(id, kodOdbioru, opis, statusId);
         return "redirect:/przesylki/" + id;
     }
 }

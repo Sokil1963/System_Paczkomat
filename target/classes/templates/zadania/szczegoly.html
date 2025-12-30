@@ -36,19 +36,27 @@
                     </dd>
                 </dl>
 
-                <div class="mt-4">
-                    <h4>Aktualizuj status</h4>
-                    <form th:action="@{/zadania/{id}/status(id=${zadanie.id})}" method="post">
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status:</label>
-                            <select class="form-control" id="status" name="status">
-                                <option value="ZAPLANOWANE">ZAPLANOWANE</option>
-                                <option value="W_TRAKCIE">W_TRAKCIE</option>
-                                <option value="ZAKONCZONE">ZAKONCZONE</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Aktualizuj</button>
-                    </form>
+                <div class="card mb-4" th:if="${zadanie}">
+                    <div class="card-header bg-primary text-white">Edycja Zadania</div>
+                    <div class="card-body">
+                        <form th:action="@{/zadania/{id}/edytuj(id=${zadanie.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Typ:</label>
+                                <input type="text" class="form-control" name="typ" th:value="${zadanie.typ}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Status:</label>
+                                <select class="form-select" name="status">
+                                    <option value="ZAPLANOWANE" th:selected="${zadanie.status == 'ZAPLANOWANE'}">ZAPLANOWANE</option>
+                                    <option value="W_TRAKCIE" th:selected="${zadanie.status == 'W_TRAKCIE'}">W_TRAKCIE</option>
+                                    <option value="ZAKONCZONE" th:selected="${zadanie.status == 'ZAKONCZONE'}">ZAKONCZONE</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning">Zapisz zmiany</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@ package pl.pwr.paczkomaty.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,14 +31,37 @@ public class UzytkownikController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String szczegolyUzytkownika(@PathVariable Integer id, Model model) {
-        Optional<Uzytkownik> uzytkownik = uzytkownikService.znajdzUzytkownika(id);
-        if (uzytkownik.isPresent()) {
-            model.addAttribute("uzytkownik", uzytkownik.get());
-            return "uzytkownicy/szczegoly";
+    public String szczegolyUzytkownika(@PathVariable Integer id, Model model, Authentication auth) {
+        Optional<Uzytkownik> uzytkownikOpt = uzytkownikService.znajdzUzytkownika(id);
+
+        if (uzytkownikOpt.isPresent()) {
+            Uzytkownik u = uzytkownikOpt.get();
+            boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+            // Sprawdzenie: Czy to admin LUB czy użytkownik edytuje samego siebie
+            if (isAdmin || u.getLogin().equals(auth.getName())) {
+                model.addAttribute("uzytkownik", u);
+                return "uzytkownicy/szczegoly";
+            }
         }
-        return "redirect:/uzytkownicy";
+        return "redirect:/403"; // lub redirect:/uzytkownicy
+    }
+    @PostMapping("/{id}/edytuj")
+    public String edytujUzytkownika(@PathVariable Integer id,
+                                    @RequestParam String login,
+                                    @RequestParam(required = false) String haslo,
+                                    Authentication auth) {
+        Optional<Uzytkownik> uzytkownikOpt = uzytkownikService.znajdzUzytkownika(id);
+        if (uzytkownikOpt.isPresent()) {
+            Uzytkownik u = uzytkownikOpt.get();
+            boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin || u.getLogin().equals(auth.getName())) {
+                uzytkownikService.aktualizujUzytkownika(id, login, haslo);
+                return "redirect:/uzytkownicy/" + id;
+            }
+        }
+        return "redirect:/403";
     }
 
     @Valid

@@ -35,15 +35,39 @@
                     </dd>
                 </dl>
 
-                <div class="mt-4">
-                    <h4>Aktualizuj kod odbioru</h4>
-                    <form th:action="@{/przesylki/{id}/kod_odbioru(id=${przesylka.id})}" method="post">
-                        <div class="mb-3">
-                            <label for="kod_odbioru" class="form-label">Nowy kod odbioru:</label>
-                            <input type="text" class="form-control" id="kod_odbioru" name="kod_odbioru" required>
-                        </div>
-                        <button type="submit" class="btn btn-warning">Zmień kod</button>
-                    </form>
+                <div class="card mb-4" th:if="${przesylka}">
+                    <div class="card-header bg-primary text-white">Edycja Przesyłki</div>
+                    <div class="card-body">
+                        <form th:action="@{/przesylki/{id}/edytuj(id=${przesylka.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">ID:</label>
+                                <input type="text" class="form-control" th:value="${przesylka.id}" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Opis:</label>
+                                <textarea class="form-control" name="opis" rows="2" th:text="${przesylka.opis}"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kod odbioru:</label>
+                                <input type="number" class="form-control" name="kodOdbioru" th:value="${przesylka.kodOdbioru}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Status:</label>
+                                <select class="form-select" name="statusId">
+                                    <option th:each="st : ${wszystkieStatusy}"
+                                            th:value="${st.id}"
+                                            th:text="${st.kod}"
+                                            th:selected="${przesylka.aktualnyStatus != null && st.id == przesylka.aktualnyStatus.id}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning">Zapisz zmiany</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

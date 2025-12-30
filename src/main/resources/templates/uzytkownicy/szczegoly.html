@@ -32,6 +32,30 @@
                     </dd>
                 </dl>
             </div>
+            <div class="card" th:if="${uzytkownik}">
+                <div class="card-header">Edycja Użytkownika</div>
+                <div class="card-body">
+                    <form th:action="@{/uzytkownicy/{id}/edytuj(id=${uzytkownik.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Login:</label>
+                            <input type="text" class="form-control" name="login" th:value="${uzytkownik.login}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nowe Hasło (zostaw puste aby nie zmieniać):</label>
+                            <input type="password" class="form-control" name="haslo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rola:</label>
+                            <input type="text" class="form-control" th:value="${uzytkownik.rola}" disabled readonly>
+                            <small class="text-muted">Roli nie można zmienić w tym widoku.</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning">Zaktualizuj dane</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

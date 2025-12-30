@@ -1,5 +1,6 @@
 package pl.pwr.paczkomaty.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +109,12 @@ public class PaczkomatService {
             return awariaPaczkomatuRepository.findByPaczkomatId(paczkomatId);
         }
         return awariaPaczkomatuRepository.findAll();
+    }
+    public void aktualizujDanePaczkomatu(Integer id, String kod, String adres) {
+        Paczkomat p = paczkomatRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paczkomat nie istnieje"));
+        p.setKod(kod);
+        p.setAdres(adres);
     }
 
 }

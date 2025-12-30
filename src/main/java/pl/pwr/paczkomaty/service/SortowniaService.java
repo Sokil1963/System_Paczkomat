@@ -1,5 +1,6 @@
 package pl.pwr.paczkomaty.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,13 @@ public class SortowniaService {
 
     public void usunSortownie(Integer id) {
         sortowniaRepository.deleteById(id);
+    }
+
+    public void aktualizujSortownie(Integer id, String nazwa, String adres) {
+        Sortownia s = sortowniaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sortownia nie istnieje"));
+        s.setNazwa(nazwa);
+        s.setAdres(adres);
     }
 }
 

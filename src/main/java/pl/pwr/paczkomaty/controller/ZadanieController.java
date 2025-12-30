@@ -56,8 +56,17 @@ public class ZadanieController extends BaseController {
 
     @PostMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
-    public String aktualizujStatus(@PathVariable Integer id, @RequestParam String status) {
-        zadanieService.aktualizujStatusZadania(id, status);
+    public String aktualizujStatus(@PathVariable Integer id,@RequestParam String typ, @RequestParam String status) {
+        zadanieService.edytujZadanie(id,typ, status);
+        return "redirect:/zadania/" + id;
+    }
+
+    @PostMapping("/{id}/edytuj")
+    @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
+    public String edytujZadanie(@PathVariable Integer id,
+                                @RequestParam String typ,
+                                @RequestParam String opis) {
+        zadanieService.edytujZadanie(id, typ, opis);
         return "redirect:/zadania/" + id;
     }
 }

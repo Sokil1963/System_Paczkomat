@@ -92,5 +92,13 @@ public class PaczkomatController extends BaseController {
         paczkomatService.odblokujPaczkomat(id);
         return "redirect:/paczkomaty/" + id;
     }
+    @PostMapping("/{id}/edytuj")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FIXER')")
+    public String edytujPaczkomat(@PathVariable Integer id,
+                                  @RequestParam String kod,
+                                  @RequestParam String adres) {
+        paczkomatService.aktualizujDanePaczkomatu(id, kod, adres);
+        return "redirect:/paczkomaty/" + id;
+    }
 }
 

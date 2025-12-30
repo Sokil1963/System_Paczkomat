@@ -66,5 +66,13 @@ public class SortowniaController extends BaseController {
         sortowniaService.usunSortownie(id);
         return "redirect:/sortownie";
     }
+    @PostMapping("/{id}/edytuj")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String edytujSortownie(@PathVariable Integer id,
+                                  @RequestParam String nazwa,
+                                  @RequestParam String lokalizacja) {
+        sortowniaService.aktualizujSortownie(id, nazwa, lokalizacja);
+        return "redirect:/sortownie/" + id;
+    }
 }
 
