@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.pwr.paczkomaty.model.entity.Przesylka;
-import pl.pwr.paczkomaty.model.entity.Uzytkownik;
 import pl.pwr.paczkomaty.service.PrzesylkaService;
 
 import java.util.List;
@@ -73,7 +72,7 @@ public class PrzesylkaController extends BaseController {
         return "przesylki/szukaj";
     }
 
-    @PostMapping("/{id}/kod_odbioru") // To musi pasować do th:action w HTML
+    @PostMapping("/{id}/kod_odbioru") 
      @PreAuthorize("hasAnyRole('ADMIN', 'KURIER')")
     public String aktualizujKodOdbioru(@PathVariable Integer id,
                                        @RequestParam("kod_odbioru") Integer kodOdbioru, @RequestParam String opis, @RequestParam Integer status) {
