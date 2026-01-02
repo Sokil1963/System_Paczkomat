@@ -71,9 +71,12 @@ public class E2ETests {
                 .setPath(Paths.get("storageState.json")));
 
 
+      page.waitForSelector("#username", new Page.WaitForSelectorOptions()
+              .setState(WaitForSelectorState.VISIBLE)
+              .setTimeout(7000));
 
-//        assertTrue(page.textContent("#login-value").contains("admin"),
-//                "Login value should contain 'admin'");
+        assertTrue(page.textContent("#username").contains("admin"),
+                "Login value should contain 'admin'");
 
 
         Page page2 = context.newPage();
