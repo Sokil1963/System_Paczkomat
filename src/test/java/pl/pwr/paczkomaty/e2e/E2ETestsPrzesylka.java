@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class E2ETests {
+public class E2ETestsPrzesylka {
     static Playwright playwright;
     static Browser browser;
 
@@ -51,7 +51,7 @@ public class E2ETests {
         );
 
         page.waitForSelector("#login", new Page.WaitForSelectorOptions()
-        .setState(WaitForSelectorState.ATTACHED)
+                .setState(WaitForSelectorState.ATTACHED)
                 .setTimeout(7000));
 
 
@@ -71,9 +71,9 @@ public class E2ETests {
                 .setPath(Paths.get("storageState.json")));
 
 
-      page.waitForSelector("#username", new Page.WaitForSelectorOptions()
-              .setState(WaitForSelectorState.VISIBLE)
-              .setTimeout(7000));
+        page.waitForSelector("#username", new Page.WaitForSelectorOptions()
+                .setState(WaitForSelectorState.VISIBLE)
+                .setTimeout(7000));
 
         assertTrue(page.textContent("#username").contains("admin"),
                 "Login value should contain 'admin'");
@@ -101,41 +101,43 @@ public class E2ETests {
         Page page3 = context2.newPage();
 
 
-        page3.navigate("http://localhost:8080/sortownie",
+        page3.navigate("http://localhost:8080/przesylki",
                 new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
         );
 
 
 
-        page3.waitForSelector("text=Lista Sortowni", new Page.WaitForSelectorOptions()
+        page3.waitForSelector("text=Lista Przesyłek", new Page.WaitForSelectorOptions()
                 .setState(WaitForSelectorState.VISIBLE)
                 .setTimeout(7000));
 
-        assertTrue(page3.isVisible("text=Lista Sortowni"),
-                "Should display 'Lista Sortowni' message");
+        assertTrue(page3.isVisible("text=Lista Przesyłek"),
+                "ought to display 'Lista Przesyłek' message");
 
 
         Locator createSortownieButton = page3.getByRole(AriaRole.LINK,
-                new Page.GetByRoleOptions().setName("Dodaj nową sortownię"));
+                new Page.GetByRoleOptions().setName("Dodaj nową przesyłkę"));
         createSortownieButton.click();
 
-        page3.waitForSelector("#nazwa", new Page.WaitForSelectorOptions()
+        page3.waitForSelector("#opis", new Page.WaitForSelectorOptions()
                 .setState(WaitForSelectorState.VISIBLE)
                 .setTimeout(7000));
 
-        page3.fill("#nazwa", "Testowa Sortownia");
-        page3.fill("#adres", "Testowy Adres 123");
+        page3.fill("#opis", "Testowa przesylka");
+        page3.selectOption("#gabaryt", "B");
+        page3.fill("#waga", "3");
+        page3.fill("#kodOdbioru", "6661");
         page3.click("button[type='submit']");
 
 
-        assertTrue(page3.isVisible("text=Testowa Sortownia"),
-                "Should display newly created sortownia Testowa Sortownia");
+        assertTrue(page3.isVisible("text=Testowa Przesylka"),
+                "Should display among others newly created przesylka Testowa przesylka");
 
 
 
 
-context.close();
-context2.close();
+        context.close();
+        context2.close();
 
 
 
