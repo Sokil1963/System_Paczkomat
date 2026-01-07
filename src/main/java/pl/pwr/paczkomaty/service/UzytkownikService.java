@@ -29,8 +29,15 @@ public class UzytkownikService {
         return uzytkownikRepository.findById(id);
     }
 
+    public Optional<Uzytkownik> znajdzPoLoginie(String login) {
+        return uzytkownikRepository.findByLogin(login);
+    }
+
+    public List<Uzytkownik> znajdzKurierow() {
+        return uzytkownikRepository.findByRola("KURIER");
+    }
+
     public Uzytkownik zapiszUzytkownika(Uzytkownik uzytkownik) {
-        // Hashowanie hasła tylko jeśli zostało podane i nie jest już zahashowane
         if (uzytkownik.getHasloHash() != null && !uzytkownik.getHasloHash().isEmpty()) {
             if (!uzytkownik.getHasloHash().startsWith("$2a$")) {
                 uzytkownik.setHasloHash(passwordEncoder.encode(uzytkownik.getHasloHash()));
@@ -47,7 +54,6 @@ public class UzytkownikService {
         if (noweHaslo != null && !noweHaslo.isBlank()) {
             user.setHasloHash(passwordEncoder.encode(noweHaslo));
         }
-        // Save nie jest konieczne przy @Transactional, ale można zostawić
         uzytkownikRepository.save(user);
     }
 

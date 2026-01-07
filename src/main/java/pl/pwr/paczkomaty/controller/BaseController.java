@@ -9,18 +9,13 @@ import pl.pwr.paczkomaty.repository.UzytkownikRepository;
 
 import java.util.Optional;
 
-/**
- * Bazowy kontroler z metodami pomocniczymi do kontroli dostępu
- * Używa Spring Security do zarządzania autentykacją
- */
+
 public abstract class BaseController {
 
     @Autowired
     protected UzytkownikRepository uzytkownikRepository;
 
-    /**
-     * Pobiera aktualnego zalogowanego użytkownika z Spring Security
-     */
+
     protected Optional<Uzytkownik> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

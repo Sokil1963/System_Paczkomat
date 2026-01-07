@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przesyłka odebrana! - Paczkomat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terminal-card {
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .terminal-header {
+            background: #27ae60;
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+        .terminal-body {
+            padding: 40px;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+        .success-icon {
+            font-size: 80px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .countdown {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-card">
+        <div class="terminal-header">
+            <span class="success-icon">✅</span>
+            <h2 class="mb-0">PRZESYŁKA ODEBRANA!</h2>
+        </div>
+        <div class="terminal-body text-center">
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <div th:if="${przesylka}">
+                <p class="lead">Przesyłka #<span th:text="${przesylka.id}"></span> została pomyślnie odebrana.</p>
+                <p class="text-muted" th:text="${przesylka.opis}"></p>
+            </div>
+
+            <div class="my-4">
+                <p class="text-muted">Skrytka jest otwarta. Odbierz przesyłkę.</p>
+                <p class="text-muted">Skrytka zamknie się automatycznie.</p>
+            </div>
+
+            <div class="my-5">
+                <p class="small text-muted">Ekran powróci do ekranu głównego za:</p>
+                <div class="countdown" id="countdown">10</div>
+            </div>
+
+            <hr>
+
+            <a href="/odbior" class="btn btn-outline-success btn-lg">
+                Odbierz kolejną przesyłkę
+            </a>
+
+            <div class="mt-3">
+                <a href="/" class="btn btn-link text-muted">← Strona główna</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let seconds = 10;
+        const countdownEl = document.getElementById('countdown');
+
+        const interval = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+
+            if (seconds <= 0) {
+                clearInterval(interval);
+                window.location.href = '/odbior';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
+

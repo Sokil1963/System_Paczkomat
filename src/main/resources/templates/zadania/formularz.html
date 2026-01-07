@@ -10,10 +10,9 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="container mt-5">
-        <h1>Dodaj nowe zadanie</h1>
+        <h1>Dodaj nowe zadanie dystrybucyjne</h1>
 
         <form th:action="@{/zadania}" th:object="${zadanie}" method="post" novalidate>
-            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Błędy walidacji:</strong>
                 <ul>
@@ -23,7 +22,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="typ" class="form-label">Typ:</label>
+                <label for="typ" class="form-label">Typ zadania:</label>
                 <input type="text"
                        class="form-control"
                        id="typ"
@@ -31,6 +30,7 @@
                        th:classappend="${#fields.hasErrors('typ')} ? 'is-invalid'"
                        pattern="^[^-].*"
                        onkeypress="return event.key !== '-'"
+                       placeholder="np. TRANSPORT, ODBIÓR, DOSTAWA"
                        required>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('typ')}">
                     <span th:each="err : ${#fields.errors('typ')}" th:text="${err}"></span>
@@ -46,7 +46,25 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <div class="mb-3">
+                <label for="kurier" class="form-label">Kurier (opcjonalnie):</label>
+                <select class="form-control" id="kurier" th:field="*{kurier}">
+                    <option value="">-- Wybierz kuriera --</option>
+                    <option th:each="k : ${kurierzy}" th:value="${k.id}" th:text="${k.login}"></option>
+                </select>
+                <small class="form-text text-muted">Możesz przydzielić kuriera później</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="sortownia" class="form-label">Sortownia (opcjonalnie):</label>
+                <select class="form-control" id="sortownia" th:field="*{sortownia}">
+                    <option value="">-- Wybierz sortownię --</option>
+                    <option th:each="s : ${sortownie}" th:value="${s.id}" th:text="${s.nazwa}"></option>
+                </select>
+                <small class="form-text text-muted">Możesz przydzielić sortownię później</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Utwórz zadanie</button>
             <a href="/zadania" class="btn btn-secondary">Anuluj</a>
         </form>
     </div>

@@ -13,10 +13,11 @@
         <a href="/przesylki" class="btn btn-secondary mb-3">← Powrót do listy</a>
         
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
         <div class="card" th:if="${przesylka}">
             <div class="card-header">
-                <h2>Szczegóły Przesyłki</h2>
+                <h2>Szczegóły Przesyłki #<span th:text="${przesylka.id}"></span></h2>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -34,6 +35,67 @@
                         <span class="text-muted" th:unless="${przesylka.aktualnyStatus}">Brak statusu</span>
                     </dd>
                 </dl>
+
+
+
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"> Historia zmian statusu</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(historiaStatusow)}" class="text-muted">
+                            Brak historii zmian statusu
+                        </div>
+                        <table th:unless="${#lists.isEmpty(historiaStatusow)}" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Użytkownik</th>
+                                    <th>Komentarz</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="h : ${historiaStatusow}">
+                                    <td th:text="${#temporals.format(h.czasZmiany, 'yyyy-MM-dd HH:mm')}"></td>
+                                    <td><span class="badge bg-info" th:text="${h.status.kod}"></span></td>
+                                    <td th:text="${h.uzytkownik != null ? h.uzytkownik.login : 'System'}"></td>
+                                    <td th:text="${h.komentarz ?: '-'}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"> Zmień status przesyłki</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/przesylki/{id}/zmien-status(id=${przesylka.id})}" method="post">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Nowy status:</label>
+                                    <select class="form-select" name="statusId" required>
+                                        <option th:each="st : ${wszystkieStatusy}"
+                                                th:value="${st.id}"
+                                                th:text="${st.kod}"
+                                                th:selected="${przesylka.aktualnyStatus != null && st.id == przesylka.aktualnyStatus.id}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Komentarz:</label>
+                                    <input type="text" class="form-control" name="komentarz"
+                                           placeholder="Powód zmiany statusu...">
+                                </div>
+                                <div class="col-md-2 mb-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-warning w-100">Zmień status</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <div class="card mb-4" th:if="${przesylka}">
                     <div class="card-header bg-primary text-white">Edycja Przesyłki</div>
@@ -65,7 +127,15 @@
                                 </select>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label">Komentarz do zmiany:</label>
+                                <input type="text" class="form-control" name="komentarz" placeholder="Opcjonalny komentarz...">
+                            </div>
+
                             <button type="submit" class="btn btn-warning">Zapisz zmiany</button>
+                            <a th:href="@{/zgloszenia/nowe(przesylkaId=${przesylka.id})}" class="btn btn-danger">
+                                Zgłoś problem
+                            </a>
                         </form>
                     </div>
                 </div>

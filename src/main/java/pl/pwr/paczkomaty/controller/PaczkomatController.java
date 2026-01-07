@@ -69,7 +69,6 @@ public class PaczkomatController extends BaseController {
     public String zglosAwarie(@PathVariable Integer id,
                              @RequestParam String opis,
                              @RequestParam(required = false) Boolean wymagaBlokady) {
-        // Użyj ID zalogowanego użytkownika
         Integer loggedUserId = null;
         Optional<Uzytkownik> userOpt = getCurrentUser();
         if (userOpt.isPresent()) {

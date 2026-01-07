@@ -38,13 +38,12 @@ public class UzytkownikController extends BaseController {
             Uzytkownik u = uzytkownikOpt.get();
             boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-            // Sprawdzenie: Czy to admin LUB czy użytkownik edytuje samego siebie
             if (isAdmin || u.getLogin().equals(auth.getName())) {
                 model.addAttribute("uzytkownik", u);
                 return "uzytkownicy/szczegoly";
             }
         }
-        return "redirect:/403"; // lub redirect:/uzytkownicy
+        return "redirect:/403";
     }
     @PostMapping("/{id}/edytuj")
     public String edytujUzytkownika(@PathVariable Integer id,

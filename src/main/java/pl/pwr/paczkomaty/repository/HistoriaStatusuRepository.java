@@ -9,5 +9,9 @@ import java.util.List;
 @Repository
 public interface HistoriaStatusuRepository extends JpaRepository<HistoriaStatusu, Integer> {
     List<HistoriaStatusu> findByPrzesylkaId(Integer przesylkaId);
+
+    List<HistoriaStatusu> findByPrzesylkaIdOrderByCzasZmianyDesc(Integer przesylkaId);
+
+    List<HistoriaStatusu> findByPrzesylkaIdOrderByCzasZmianyAsc(Integer przesylkaId);
 }
 

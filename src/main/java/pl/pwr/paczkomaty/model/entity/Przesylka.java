@@ -19,7 +19,7 @@ import java.util.List;
 public class Przesylka {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank(message = "Opis jest wymagany")
     @Column(name = "opis", columnDefinition = "TEXT")

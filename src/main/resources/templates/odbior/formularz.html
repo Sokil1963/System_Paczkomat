@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odbiór przesyłki - Paczkomat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terminal-card {
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .terminal-header {
+            background: #2c3e50;
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .terminal-body {
+            padding: 40px;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+        .kod-input {
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 10px;
+            font-weight: bold;
+        }
+        .btn-odbierz {
+            font-size: 1.2rem;
+            padding: 15px 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-card">
+        <div class="terminal-header">
+            <h2 class="mb-0">📦 PACZKOMAT</h2>
+            <p class="mb-0 mt-2">Terminal odbioru przesyłek</p>
+        </div>
+        <div class="terminal-body">
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <h4 class="text-center mb-4">Wpisz kod odbioru:</h4>
+
+            <form th:action="@{/odbior/sprawdz}" method="post">
+                <div class="mb-4">
+                    <input type="number"
+                           class="form-control kod-input"
+                           name="kodOdbioru"
+                           placeholder="000000"
+                           required
+                           min="1"
+                           autofocus>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-odbierz">
+                        🔍 Sprawdź przesyłkę
+                    </button>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <p class="text-muted text-center small">
+                Kod odbioru znajdziesz w SMS-ie lub e-mailu z powiadomieniem o dostarczeniu przesyłki.
+            </p>
+
+            <div class="text-center mt-3">
+                <a href="/" class="btn btn-outline-secondary btn-sm">← Strona główna</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

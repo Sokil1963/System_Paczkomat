@@ -60,7 +60,6 @@ public class PaczkomatService {
             
             awariaPaczkomatuRepository.save(awaria);
             
-            // Jeśli wymaga blokady, zablokuj paczkomat
             if (awaria.getWymagaBlokady()) {
                 zablokujPaczkomat(idPaczkomatu, awaria.getId());
             }
@@ -95,7 +94,6 @@ public class PaczkomatService {
             paczkomat.setStatus("AKTYWNY");
             paczkomatRepository.save(paczkomat);
             
-            // Znajdź aktywną blokadę i ją zamknij
             List<BlokadaPaczkomatu> blokady = blokadaPaczkomatuRepository.findByPaczkomatIdAndDataOdblokowaniaIsNull(idPaczkomatu);
             for (BlokadaPaczkomatu blokada : blokady) {
                 blokada.setDataOdblokowania(LocalDateTime.now());

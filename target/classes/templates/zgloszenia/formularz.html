@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nowe zgłoszenie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <a href="/zgloszenia" class="btn btn-secondary mb-3">← Powrót do listy</a>
+
+        <h1>🚨 Zgłoszenie nieprawidłowej przesyłki</h1>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Formularz zgłoszenia</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/zgloszenia}" method="post">
+
+                    <!-- Informacje o przesyłce jeśli wybrana -->
+                    <div th:if="${przesylka}" class="alert alert-info mb-4">
+                        <h6>Wybrana przesyłka:</h6>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">ID:</dt>
+                            <dd class="col-sm-9" th:text="${przesylka.id}"></dd>
+                            <dt class="col-sm-3">Opis:</dt>
+                            <dd class="col-sm-9" th:text="${przesylka.opis}"></dd>
+                            <dt class="col-sm-3">Status:</dt>
+                            <dd class="col-sm-9">
+                                <span class="badge bg-secondary"
+                                      th:if="${przesylka.aktualnyStatus}"
+                                      th:text="${przesylka.aktualnyStatus.kod}"></span>
+                            </dd>
+                        </dl>
+                        <input type="hidden" name="przesylkaId" th:value="${przesylka.id}">
+                    </div>
+
+                    <!-- Wybór przesyłki jeśli nie wybrana -->
+                    <div th:unless="${przesylka}" class="mb-3">
+                        <label for="przesylkaId" class="form-label">Wybierz przesyłkę: *</label>
+                        <select class="form-select" id="przesylkaId" name="przesylkaId" required>
+                            <option value="">-- Wybierz przesyłkę --</option>
+                            <option th:each="p : ${przesylki}"
+                                    th:value="${p.id}"
+                                    th:text="'#' + ${p.id} + ' - ' + ${p.opis}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Typ zgłoszenia -->
+                    <div class="mb-3">
+                        <label class="form-label">Typ nieprawidłowości: *</label>
+                        <div class="row">
+                            <div th:each="t : ${typy}" class="col-md-4">
+                                <div class="form-check card p-3 mb-2">
+                                    <input class="form-check-input" type="radio"
+                                           name="typ" th:id="${'typ_' + t}" th:value="${t}" required>
+                                    <label class="form-check-label" th:for="${'typ_' + t}">
+                                        <span th:if="${t == 'USZKODZONA'}">🔨 Uszkodzona</span>
+                                        <span th:if="${t == 'ZAGUBIONA'}">❓ Zagubiona</span>
+                                        <span th:if="${t == 'INNA'}">📝 Inna nieprawidłowość</span>
+                                        <small class="d-block text-muted" th:if="${t == 'USZKODZONA'}">
+                                            Przesyłka nosi ślady uszkodzeń mechanicznych
+                                        </small>
+                                        <small class="d-block text-muted" th:if="${t == 'ZAGUBIONA'}">
+                                            Przesyłka nie dotarła lub nie można jej zlokalizować
+                                        </small>
+                                        <small class="d-block text-muted" th:if="${t == 'INNA'}">
+                                            Inne problemy z przesyłką
+                                        </small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opis problemu -->
+                    <div class="mb-3">
+                        <label for="opis" class="form-label">Opis problemu:</label>
+                        <textarea class="form-control" id="opis" name="opis" rows="4"
+                                  placeholder="Opisz szczegółowo napotkany problem..."></textarea>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <strong>Uwaga:</strong> Po utworzeniu zgłoszenia status przesyłki zostanie automatycznie zaktualizowany.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            🚨 Utwórz zgłoszenie
+                        </button>
+                        <a href="/zgloszenia" class="btn btn-outline-secondary">Anuluj</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

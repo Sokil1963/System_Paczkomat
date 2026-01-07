@@ -2,143 +2,82 @@ package pl.pwr.paczkomaty.e2e;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.WaitForSelectorState;
-import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.*;
-import java.nio.file.Paths;
-
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class E2ETestsSortownia {
-    static Playwright playwright;
-    static Browser browser;
 
-    BrowserContext context;
-    Page page;
+public class E2ETestsSortownia extends BaseE2ETest {
 
-    @BeforeAll
-    static void launchBrowser() {
-        playwright = Playwright.create();
-        browser = playwright.firefox().launch(
-                new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(100)
-        );
+
+    @Test
+    @DisplayName("list of parcels should be visible to admin")
+    void testAdminLoginSuccess() {
+        loginAsAdmin();
+
+        waitForVisible(page, "#username");
+        assertTrue(page.textContent("#username").contains(ADMIN_LOGIN),
+                "Name of logged in admin as 'admin' should be visible on dashboard");
     }
 
-    @AfterAll
-    static void closeBrowser() {
-        playwright.close();
+
+    @Test
+    @DisplayName("session should persist across tabs")
+    void testSessionPersistsAcrossTabs() {
+        loginAsAdmin();
+
+        Page page2 = context.newPage();
+        navigateTo(page2, "/");
+
+        waitForVisible(page2, "text=Witaj w systemie zarządzania siecią paczkomatów");
+
+        assertVisible(page2, "text=System Zarządzania Siecią Paczkomatów",
+                "dashboard should be visible in new tab without re-login");
+
+        page2.close();
     }
 
-    @BeforeEach
-    void createContextAndPage() {
-        context = browser.newContext(new Browser.NewContextOptions()
-                .setViewportSize(1280, 720)
-                .setIgnoreHTTPSErrors(true)
-        );
-        page = context.newPage();
-    }
 
-    @AfterEach
-    void closeContext() {
-        context.close();
+    @Test
+    @DisplayName("Saved storage state should allow reuse of session")
+    void testStorageStateReuse() {
+        loginAsAdmin();
+
+        try (BrowserContext authenticatedContext = createAuthenticatedContext()) {
+            Page newPage = authenticatedContext.newPage();
+            navigateTo(newPage, "/sortownie");
+
+            waitForVisible(newPage, "text=Lista Sortowni");
+
+            assertVisible(newPage, "text=Lista Sortowni",
+                    "should be able to access sortownie page with saved storage state");
+        }
     }
 
     @Test
-    void TestAdvancedBrowsermanagment() {
-        page.navigate("http://localhost:8080/login",
-                new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
-        );
+    @DisplayName("Creation of new sortownia should work correctly")
+    void testCreateNewSortownia() {
+        loginAsAdmin();
 
-        page.waitForSelector("#login", new Page.WaitForSelectorOptions()
-        .setState(WaitForSelectorState.ATTACHED)
-                .setTimeout(7000));
+        try (BrowserContext authContext = createAuthenticatedContext()) {
+            Page sortowniaPage = authContext.newPage();
+            navigateTo(sortowniaPage, "/sortownie");
 
+            waitForVisible(sortowniaPage, "text=Lista Sortowni");
 
-        page.fill("#login", "admin");
-        page.fill("#haslo", "1111");
-        page.click("button[type='submit']");
+            Locator createButton = sortowniaPage.getByRole(AriaRole.LINK,
+                    new Page.GetByRoleOptions().setName("Dodaj nową sortownię"));
+            createButton.click();
 
-        //koniec logowania
-        page.waitForSelector(
-                "text=Witaj w systemie zarządzania siecią paczkomatów",
-                new Page.WaitForSelectorOptions()
-                        .setState(WaitForSelectorState.VISIBLE)
-                        .setTimeout(7000)
-        );
+            waitForVisible(sortowniaPage, "#nazwa");
+            sortowniaPage.fill("#nazwa", "Testowa Sortownia");
+            sortowniaPage.fill("#adres", "Testowy Adres 123");
+            sortowniaPage.click("button[type='submit']");
 
-        context.storageState(new BrowserContext.StorageStateOptions()
-                .setPath(Paths.get("storageState.json")));
+            waitForVisible(sortowniaPage, "text=Testowa Sortownia");
 
-
-      page.waitForSelector("#username", new Page.WaitForSelectorOptions()
-              .setState(WaitForSelectorState.VISIBLE)
-              .setTimeout(7000));
-
-        assertTrue(page.textContent("#username").contains("admin"),
-                "Login value should contain 'admin'");
-
-
-        Page page2 = context.newPage();
-        page2.navigate("http://localhost:8080/",
-                new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
-        );
-
-        page2.waitForSelector("text=Witaj w systemie zarządzania siecią paczkomatów", new Page.WaitForSelectorOptions()
-                .setState(WaitForSelectorState.VISIBLE)
-                .setTimeout(7000));
-
-
-        assertTrue(page2.isVisible("text=System Zarządzania Siecią Paczkomatów"),
-                "Dashboard should contain 'System Zarządzania Siecią Paczkomatów'");
-
-
-        BrowserContext context2 = browser.newContext(new Browser.NewContextOptions()
-                .setStorageStatePath(Paths.get("storageState.json"))
-                .setIgnoreHTTPSErrors(true)
-        );
-
-        Page page3 = context2.newPage();
-
-
-        page3.navigate("http://localhost:8080/sortownie",
-                new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
-        );
-
-
-
-        page3.waitForSelector("text=Lista Sortowni", new Page.WaitForSelectorOptions()
-                .setState(WaitForSelectorState.VISIBLE)
-                .setTimeout(7000));
-
-        assertTrue(page3.isVisible("text=Lista Sortowni"),
-                "Should display 'Lista Sortowni' message");
-
-
-        Locator createSortownieButton = page3.getByRole(AriaRole.LINK,
-                new Page.GetByRoleOptions().setName("Dodaj nową sortownię"));
-        createSortownieButton.click();
-
-        page3.waitForSelector("#nazwa", new Page.WaitForSelectorOptions()
-                .setState(WaitForSelectorState.VISIBLE)
-                .setTimeout(7000));
-
-        page3.fill("#nazwa", "Testowa Sortownia");
-        page3.fill("#adres", "Testowy Adres 123");
-        page3.click("button[type='submit']");
-
-
-        assertTrue(page3.isVisible("text=Testowa Sortownia"),
-                "Should display newly created sortownia Testowa Sortownia");
-
-
-
-
-context.close();
-context2.close();
-
-
-
-
+            assertVisible(sortowniaPage, "text=Testowa Sortownia",
+                    "Creation of new sortownia should be visible in the list");
+        }
     }
 }

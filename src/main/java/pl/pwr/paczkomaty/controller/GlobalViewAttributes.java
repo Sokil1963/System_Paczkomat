@@ -11,9 +11,7 @@ import pl.pwr.paczkomaty.repository.UzytkownikRepository;
 
 import java.util.Optional;
 
-/**
- * Globalne atrybuty widoku dostępne we wszystkich szablonach
- */
+
 @ControllerAdvice
 public class GlobalViewAttributes {
 

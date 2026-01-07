@@ -42,11 +42,13 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/odbior/**").permitAll() // Publiczny dostęp dla odbioru z paczkomatu
                 .requestMatchers("/uzytkownicy/**").hasRole("ADMIN")
                 .requestMatchers("/paczkomaty/**").hasAnyRole("ADMIN", "FIXER")
                 .requestMatchers("/przesylki/**").hasAnyRole("ADMIN", "KURIER")
                 .requestMatchers("/sortownie/**").hasRole("ADMIN")
                 .requestMatchers("/zadania/**").hasAnyRole("ADMIN", "KURIER")
+                .requestMatchers("/zgloszenia/**").hasAnyRole("ADMIN", "KURIER", "FIXER")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

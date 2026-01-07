@@ -12,9 +12,15 @@
     <div class="container mt-5">
         <a href="/zadania" class="btn btn-secondary mb-3">← Powrót do listy</a>
         
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <div class="card" th:if="${zadanie}">
-            <div class="card-header">
-                <h2>Szczegóły Zadania</h2>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Zadanie #<span th:text="${zadanie.id}"></span></h2>
+                <span class="badge fs-6"
+                      th:classappend="${zadanie.status == 'ZAPLANOWANE'} ? 'bg-secondary' : (${zadanie.status == 'W_TRAKCIE'} ? 'bg-primary' : 'bg-success')"
+                      th:text="${zadanie.status}"></span>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -24,9 +30,16 @@
                     <dt class="col-sm-3">Typ:</dt>
                     <dd class="col-sm-9" th:text="${zadanie.typ}"></dd>
                     
-                    <dt class="col-sm-3">Status:</dt>
+                    <dt class="col-sm-3">Kurier:</dt>
                     <dd class="col-sm-9">
-                        <span class="badge bg-info" th:text="${zadanie.status}"></span>
+                        <span th:if="${zadanie.kurier}" th:text="${zadanie.kurier.login}"></span>
+                        <span th:unless="${zadanie.kurier}" class="text-muted">Nie przydzielono</span>
+                    </dd>
+
+                    <dt class="col-sm-3">Sortownia:</dt>
+                    <dd class="col-sm-9">
+                        <span th:if="${zadanie.sortownia}" th:text="${zadanie.sortownia.nazwa}"></span>
+                        <span th:unless="${zadanie.sortownia}" class="text-muted">Nie przydzielono</span>
                     </dd>
                     
                     <dt class="col-sm-3">Data startu:</dt>
@@ -34,9 +47,148 @@
                         <span th:if="${zadanie.dataStartu != null}" th:text="${#temporals.format(zadanie.dataStartu, 'yyyy-MM-dd HH:mm')}"></span>
                         <span th:unless="${zadanie.dataStartu != null}">—</span>
                     </dd>
+
+                    <dt class="col-sm-3">Data końca:</dt>
+                    <dd class="col-sm-9">
+                        <span th:if="${zadanie.dataKonca != null}" th:text="${#temporals.format(zadanie.dataKonca, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:unless="${zadanie.dataKonca != null}">—</span>
+                    </dd>
                 </dl>
 
-                <div class="card mb-4" th:if="${zadanie}">
+                <!-- Akcje flow (PU03, PU04) -->
+                <div class="card mb-4 border-success" th:if="${zadanie.status != 'ZAKONCZONE'}">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">🚚 Akcje dystrybucyjne</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <!-- PU03: Wydanie przesyłek kurierowi -->
+                            <form th:if="${zadanie.status == 'ZAPLANOWANE' and zadanie.kurier != null}"
+                                  th:action="@{/zadania/{id}/wydaj-kurierowi(id=${zadanie.id})}" method="post"
+                                  onsubmit="return confirm('Czy na pewno wydać przesyłki kurierowi?');">
+                                <button type="submit" class="btn btn-success">
+                                    📤 Wydaj kurierowi
+                                </button>
+                            </form>
+
+                            <!-- PU04: Odebranie od kuriera -->
+                            <form th:if="${zadanie.status == 'W_TRAKCIE'}"
+                                  th:action="@{/zadania/{id}/odbierz-od-kuriera(id=${zadanie.id})}" method="post"
+                                  onsubmit="return confirm('Czy na pewno odebrać przesyłki od kuriera?');">
+                                <button type="submit" class="btn btn-info">
+                                    📥 Odbierz od kuriera
+                                </button>
+                            </form>
+
+                            <span th:if="${zadanie.kurier == null}" class="text-warning">
+                                ⚠️ Przydziel kuriera, aby wydać przesyłki
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Przypisane przesyłki -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">📦 Przypisane przesyłki</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${zadanie.przesylki == null or #lists.isEmpty(zadanie.przesylki)}" class="text-muted">
+                            Brak przypisanych przesyłek
+                        </div>
+                        <table th:unless="${zadanie.przesylki == null or #lists.isEmpty(zadanie.przesylki)}" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Opis</th>
+                                    <th>Status</th>
+                                    <th>Akcje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${zadanie.przesylki}">
+                                    <td th:text="${p.id}"></td>
+                                    <td th:text="${p.opis}"></td>
+                                    <td>
+                                        <span class="badge bg-secondary" th:if="${p.aktualnyStatus}"
+                                              th:text="${p.aktualnyStatus.kod}"></span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{/zadania/{zid}/usun-przesylke/{pid}(zid=${zadanie.id}, pid=${p.id})}"
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Usuń</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Dodawanie przesyłek -->
+                        <hr>
+                        <form th:action="@{/zadania/{id}/dodaj-przesylki(id=${zadanie.id})}" method="post">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <select class="form-select" name="przesylkaIds" multiple size="4">
+                                        <option th:each="p : ${przesylki}"
+                                                th:value="${p.id}"
+                                                th:text="'#' + ${p.id} + ' - ' + ${p.opis}">
+                                        </option>
+                                    </select>
+                                    <small class="text-muted">Przytrzymaj Ctrl, aby wybrać wiele przesyłek</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary w-100">Dodaj przesyłki</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- PU01: Przydzielanie kuriera i sortowni -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">Przydziel kuriera</div>
+                            <div class="card-body">
+                                <form th:action="@{/zadania/{id}/przydziel-kuriera(id=${zadanie.id})}" method="post">
+                                    <div class="mb-3">
+                                        <select class="form-select" name="kurierId" required>
+                                            <option value="">-- Wybierz kuriera --</option>
+                                            <option th:each="k : ${kurierzy}"
+                                                    th:value="${k.id}"
+                                                    th:text="${k.login}"
+                                                    th:selected="${zadanie.kurier != null and k.id == zadanie.kurier.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Przydziel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">Przydziel sortownię</div>
+                            <div class="card-body">
+                                <form th:action="@{/zadania/{id}/przydziel-sortownie(id=${zadanie.id})}" method="post">
+                                    <div class="mb-3">
+                                        <select class="form-select" name="sortowniaId" required>
+                                            <option value="">-- Wybierz sortownię --</option>
+                                            <option th:each="s : ${sortownie}"
+                                                    th:value="${s.id}"
+                                                    th:text="${s.nazwa}"
+                                                    th:selected="${zadanie.sortownia != null and s.id == zadanie.sortownia.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Przydziel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
                     <div class="card-header bg-primary text-white">Edycja Zadania</div>
                     <div class="card-body">
                         <form th:action="@{/zadania/{id}/edytuj(id=${zadanie.id})}" method="post">

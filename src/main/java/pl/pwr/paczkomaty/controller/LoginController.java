@@ -4,10 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * Kontroler logowania
- * Aутентификация obsługiwana jest przez Spring Security
- */
+
 @Controller
 public class LoginController {
 

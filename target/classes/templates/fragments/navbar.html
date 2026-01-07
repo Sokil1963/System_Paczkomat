@@ -45,6 +45,13 @@
                        href="/zadania">Zadania</a>
                 </li>
 
+                <!-- Zgłoszenia - dostęp: ADMIN, KURIER, FIXER -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER', 'FIXER')">
+                    <a class="nav-link"
+                       th:classappend="${#strings.contains(currentUri, '/zgloszenia')} ? ' active' : ''"
+                       href="/zgloszenia">Zgłoszenia</a>
+                </li>
+
                 <!-- Użytkownicy - dostęp: ADMIN -->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link"
