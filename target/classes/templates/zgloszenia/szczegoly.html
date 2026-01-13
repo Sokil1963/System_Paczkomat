@@ -52,7 +52,6 @@
                     </dd>
                 </dl>
 
-                <!-- Powiązana przesyłka -->
                 <div th:if="${zgloszenie.przesylka}" class="card mt-4 border-info">
                     <div class="card-header bg-info text-white">
                         📦 Powiązana przesyłka
@@ -81,7 +80,6 @@
                     </div>
                 </div>
 
-                <!-- Akcje -->
                 <div class="mt-4 d-flex gap-2">
                     <a th:if="${zgloszenie.przesylka}"
                        th:href="@{/przesylki/{id}(id=${zgloszenie.przesylka.id})}"

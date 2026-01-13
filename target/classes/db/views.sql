@@ -1,6 +1,4 @@
--- Widoki do bazy danych
 
--- Widok: Aktywne paczkomaty z liczbą skrytek
 CREATE OR REPLACE VIEW v_aktywne_paczkomaty AS
 SELECT 
     p.id,
@@ -15,7 +13,6 @@ LEFT JOIN skrytka s ON p.id = s.paczkomat_id
 WHERE p.status = 'AKTYWNY'
 GROUP BY p.id, p.kod, p.adres, p.status;
 
--- Widok: Przesyłki z aktualnym statusem i historią
 CREATE OR REPLACE VIEW v_przesylki_status AS
 SELECT 
     pr.id,
@@ -33,7 +30,6 @@ LEFT JOIN status_przesylki sp ON pr.aktualny_status_id = sp.id
 LEFT JOIN paczkomat pn ON pr.paczkomat_nadania_id = pn.id
 LEFT JOIN paczkomat pd ON pr.paczkomat_docelowy_id = pd.id;
 
--- Widok: Awarie paczkomatów z informacją o blokadach
 CREATE OR REPLACE VIEW v_awarie_paczkomatow AS
 SELECT 
     a.id,
@@ -52,7 +48,6 @@ JOIN paczkomat p ON a.paczkomat_id = p.id
 LEFT JOIN blokada_paczkomatu b ON a.id = b.awaria_id
 LEFT JOIN uzytkownik u ON a.zglaszajacy_id = u.id;
 
--- Widok: Zadania dystrybucyjne z informacją o kurierze
 CREATE OR REPLACE VIEW v_zadania_dystrybucyjne AS
 SELECT 
     z.id,
@@ -68,7 +63,6 @@ FROM zadanie_dystrybucyjne z
 LEFT JOIN sortownia s ON z.sortownia_id = s.id
 LEFT JOIN uzytkownik u ON z.kurier_id = u.id;
 
--- Widok: Statystyki użytkowników
 CREATE OR REPLACE VIEW v_statystyki_uzytkownikow AS
 SELECT 
     u.id,

@@ -13,7 +13,6 @@
         <h1>Dodaj nowego użytkownika</h1>
 
         <form th:action="@{/uzytkownicy}" th:object="${uzytkownik}" method="post" novalidate>
-            <!-- Wyświetlanie ogólnych błędów - WEWNĄTRZ formularza -->
             <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Błędy walidacji:</strong>
                 <ul>

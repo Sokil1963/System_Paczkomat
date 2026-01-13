@@ -55,14 +55,12 @@
                     </dd>
                 </dl>
 
-                <!-- Akcje flow (PU03, PU04) -->
                 <div class="card mb-4 border-success" th:if="${zadanie.status != 'ZAKONCZONE'}">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">🚚 Akcje dystrybucyjne</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex gap-2 flex-wrap">
-                            <!-- PU03: Wydanie przesyłek kurierowi -->
                             <form th:if="${zadanie.status == 'ZAPLANOWANE' and zadanie.kurier != null}"
                                   th:action="@{/zadania/{id}/wydaj-kurierowi(id=${zadanie.id})}" method="post"
                                   onsubmit="return confirm('Czy na pewno wydać przesyłki kurierowi?');">
@@ -71,7 +69,6 @@
                                 </button>
                             </form>
 
-                            <!-- PU04: Odebranie od kuriera -->
                             <form th:if="${zadanie.status == 'W_TRAKCIE'}"
                                   th:action="@{/zadania/{id}/odbierz-od-kuriera(id=${zadanie.id})}" method="post"
                                   onsubmit="return confirm('Czy na pewno odebrać przesyłki od kuriera?');">
@@ -87,7 +84,6 @@
                     </div>
                 </div>
 
-                <!-- Przypisane przesyłki -->
                 <div class="card mb-4">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">📦 Przypisane przesyłki</h5>
@@ -123,7 +119,6 @@
                             </tbody>
                         </table>
 
-                        <!-- Dodawanie przesyłek -->
                         <hr>
                         <form th:action="@{/zadania/{id}/dodaj-przesylki(id=${zadanie.id})}" method="post">
                             <div class="row">
@@ -144,7 +139,6 @@
                     </div>
                 </div>
 
-                <!-- PU01: Przydzielanie kuriera i sortowni -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card mb-4">

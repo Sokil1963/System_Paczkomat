@@ -17,42 +17,36 @@
                        href="/">Strona główna</a>
                 </li>
 
-                <!-- Paczkomaty - dostęp: ADMIN, FIXER -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'FIXER')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/paczkomaty')} ? ' active' : ''"
                        href="/paczkomaty">Paczkomaty</a>
                 </li>
 
-                <!-- Sortownie - dostęp: ADMIN -->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/sortownie')} ? ' active' : ''"
                        href="/sortownie">Sortownie</a>
                 </li>
 
-                <!-- Przesyłki - dostęp: ADMIN, KURIER -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/przesylki')} ? ' active' : ''"
                        href="/przesylki">Przesyłki</a>
                 </li>
 
-                <!-- Zadania - dostęp: ADMIN, KURIER -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/zadania')} ? ' active' : ''"
                        href="/zadania">Zadania</a>
                 </li>
 
-                <!-- Zgłoszenia - dostęp: ADMIN, KURIER, FIXER -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'KURIER', 'FIXER')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/zgloszenia')} ? ' active' : ''"
                        href="/zgloszenia">Zgłoszenia</a>
                 </li>
 
-                <!-- Użytkownicy - dostęp: ADMIN -->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link"
                        th:classappend="${#strings.contains(currentUri, '/uzytkownicy')} ? ' active' : ''"
@@ -61,7 +55,6 @@
             </ul>
 
             <ul class="navbar-nav">
-                <!-- Zalogowany użytkownik -->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown"
                        role="button" data-bs-toggle="dropdown">
@@ -73,7 +66,6 @@
                     </ul>
                 </li>
 
-                <!-- Link logowania - widoczny, gdy nikt nie jest zalogowany -->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link text-white" href="/login">Zaloguj się</a>
                 </li>

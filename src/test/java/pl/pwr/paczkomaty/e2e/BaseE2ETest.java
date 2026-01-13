@@ -60,7 +60,7 @@ public abstract class BaseE2ETest {
 
     protected void loginAsAdmin() {
         page.navigate(BASE_URL + "/login",
-                new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
+                new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE)
         );
 
         waitForElement(page, "#login");

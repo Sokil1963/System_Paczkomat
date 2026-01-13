@@ -3,7 +3,6 @@ package pl.pwr.paczkomaty.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import pl.pwr.paczkomaty.model.entity.Uzytkownik;
 import pl.pwr.paczkomaty.repository.UzytkownikRepository;
 

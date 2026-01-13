@@ -23,7 +23,6 @@
             <div class="card-body">
                 <form th:action="@{/zgloszenia}" method="post">
 
-                    <!-- Informacje o przesyłce jeśli wybrana -->
                     <div th:if="${przesylka}" class="alert alert-info mb-4">
                         <h6>Wybrana przesyłka:</h6>
                         <dl class="row mb-0">
@@ -41,7 +40,6 @@
                         <input type="hidden" name="przesylkaId" th:value="${przesylka.id}">
                     </div>
 
-                    <!-- Wybór przesyłki jeśli nie wybrana -->
                     <div th:unless="${przesylka}" class="mb-3">
                         <label for="przesylkaId" class="form-label">Wybierz przesyłkę: *</label>
                         <select class="form-select" id="przesylkaId" name="przesylkaId" required>
@@ -53,7 +51,6 @@
                         </select>
                     </div>
 
-                    <!-- Typ zgłoszenia -->
                     <div class="mb-3">
                         <label class="form-label">Typ nieprawidłowości: *</label>
                         <div class="row">
@@ -80,7 +77,6 @@
                         </div>
                     </div>
 
-                    <!-- Opis problemu -->
                     <div class="mb-3">
                         <label for="opis" class="form-label">Opis problemu:</label>
                         <textarea class="form-control" id="opis" name="opis" rows="4"
